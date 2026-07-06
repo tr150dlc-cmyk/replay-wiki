@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>りぷらい！非公式データベース</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>りぷらい！非公式データベース</h1>
+    <p>りぷらい！所属VTuberの情報をまとめる非公式ファンサイトです。</p>
+  </header>
+
+  <main>
+    <input id="search" type="text" placeholder="名前・よみがなで検索">
+
+    <div id="member-list" class="grid"></div>
+  </main>
+
+  <footer>
+    <p>※このサイトは非公式です。情報は公式発表・本人発信をもとに整理しています。</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+body {
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  background: #fff7ef;
+  color: #333;
+  margin: 0;
+}
+
+header {
+  text-align: center;
+  padding: 40px 20px 25px;
+  background: linear-gradient(135deg, #ffd6a5, #ffadad);
+}
+
+header h1 {
+  margin: 0 0 10px;
+  font-size: 28px;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+#search {
+  width: 100%;
+  max-width: 420px;
+  display: block;
+  margin: 0 auto 24px;
+  padding: 12px 14px;
+  border: 2px solid #ffc4a3;
+  border-radius: 999px;
+  font-size: 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+}
+
+.card h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+}
+
+.kana {
+  color: #777;
+  margin-top: 0;
+}
+
+.tag {
+  display: inline-block;
+  background: #ffe2c6;
+  border-radius: 999px;
+  padding: 4px 10px;
+  margin: 3px;
+  font-size: 13px;
+}
+
+.links a {
+  display: inline-block;
+  margin-right: 10px;
+  color: #d95f59;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 13px;
+  color: #777;
+}let members = [];
+
+fetch("members.json")
+  .then(response => response.json())
+  .then(data => {
+    members = data;
+    showMembers(members);
+  })
+  .catch(error => {
+    document.getElementById("member-list").innerHTML =
+      "<p>データを読み込めませんでした。</p>";
+    console.error(error);
+  });
+
+function showMembers(list) {
+  const area = document.getElementById("member-list");
+  area.innerHTML = "";
+
+  list.forEach(member => {
+    const tags = member.tags.map(tag => `<span class="tag">${tag}</span>`).join("");
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <h2>${member.name}</h2>
+      <p class="kana">${member.kana}</p>
+      <p>ファンマーク：${member.fanMark || "未登録"}</p>
+      <p>ファンネーム：${member.fanName || "未登録"}</p>
+      <p>${tags}</p>
+      <p>${member.memo || ""}</p>
+      <p class="links">
+        ${member.youtube ? `<a href="${member.youtube}" target="_blank">YouTube</a>` : ""}
+        ${member.x ? `<a href="${member.x}" target="_blank">X</a>` : ""}
+      </p>
+    `;
+
+    area.appendChild(card);
+  });
+}
+
+document.getElementById("search").addEventListener("input", e => {
+  const word = e.target.value.trim();
+
+  const result = members.filter(member =>
+    member.name.includes(word) ||
+    member.kana.includes(word)
+  );
+
+  showMembers(result);
+});
+
+[
+  {
+    "name": "為永ほまれ",
+    "kana": "ためなが ほまれ",
+    "fanMark": "",
+    "fanName": "",
+    "youtube": "",
+    "x": "",
+    "tags": ["雑談", "歌", "推し"],
+    "memo": "プロフィール情報をここに追記"
+  },
+  {
+    "name": "海田にこ",
+    "kana": "かいだ にこ",
+    "fanMark": "",
+    "fanName": "",
+    "youtube": "",
+    "x": "",
+    "tags": ["雑談", "配信"],
+    "memo": "プロフィール情報をここに追記"
+  },
+  {
+    "name": "陽月てら",
+    "kana": "ひづき てら",
+    "fanMark": "",
+    "fanName": "",
+    "youtube": "",
+    "x": "",
+    "tags": ["雑談", "歌"],
+    "memo": "プロフィール情報をここに追記"
+  },
+  {
+    "name": "紫乃めりん。",
+    "kana": "しの めりん",
+    "fanMark": "",
+    "fanName": "",
+    "youtube": "",
+    "x": "",
+    "tags": ["雑談", "配信"],
+    "memo": "プロフィール情報をここに追記"
+  },
+  {
+    "name": "如月ぽて",
+    "kana": "きさらぎ ぽて",
+    "fanMark": "",
+    "fanName": "",
+    "youtube": "",
+    "x": "",
+    "tags": ["雑談", "配信"],
+    "memo": "プロフィール情報をここに追記"
+  },
+  {
+    "name": "はみぃ",
+    "kana": "はみぃ",
+    "fanMark": "",
+    "fanName": "",
+    "youtube": "",
+    "x": "",
+    "tags": ["雑談", "配信"],
+    "memo": "プロフィール情報をここに追記"
+  }
+]
